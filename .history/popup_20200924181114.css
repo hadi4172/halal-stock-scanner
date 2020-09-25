@@ -1,0 +1,37 @@
+* {
+    border: 1px black dotted;
+}
+
+body{
+    display:flex;
+}
+
+#right{
+    width:55%
+}
+
+#left{
+    width:45%
+}
+
+#description{
+    height: 90vh;
+    overflow: auto;
+}
+
+#input{
+    max-width: 70%;
+    font-size: 11px;
+    border: none;
+    background: hsl(0 0% 93%);
+    border-radius: .25rem;
+    padding: .6rem;
+}
+
+::placeholder {
+    text-align: center;
+  }
+  
+  input:placeholder-shown {
+    text-align: left;
+  }

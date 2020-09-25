@@ -1,0 +1,24 @@
+* {
+    border: 1px black dotted;
+}
+
+body{
+    display:flex;
+}
+
+#right{
+    width:60%
+}
+
+#left{
+    width:40%
+}
+
+#description{
+    height: 90vh;
+    overflow: auto;
+}
+
+#input{
+    max-width: 70%;
+}

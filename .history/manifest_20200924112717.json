@@ -1,0 +1,46 @@
+{
+	"name": "Halal Stock Scanner",
+	"manifest_version": 2,
+	"version": "0.0.1",
+	"description": "Provides the Muslim investor with the necessary information to determine whether a stock is halal to invest in or not.",
+	"default_locale": "en",
+	"icons": {
+		"128": "img/icon128.png",
+		"48": "img/icon48.png",
+		"16": "img/icon16.png"
+	},
+	"browser_action": {
+		"default_icon": "img/icon16.png",
+		"default_popup": "popup.html"
+	},
+	"content_scripts": [{
+		"matches": ["<all_urls>"],
+		"css": ["css/font-awesome.min.css",
+			"library/AWN/style.css"
+		],
+		"js": [
+			"library/TimeMe/timeme.min.js",
+			"library/AWN/index.var.js",
+			"content.js"
+		]
+	}],
+	"options_page": "options.html",
+	"background": {
+		"scripts": [
+			"library/TimeMe/timeme.min.js",
+			"library/Compression/lz-string.min.js",
+			"background.js"
+		],
+		"persistent": true
+	},
+	"web_accessible_resources": [
+		"fonts/*",
+		"sounds/*",
+		"library/AWN/style.css"
+	],
+	"content_security_policy": "script-src 'self' https://*.sharethis.com; object-src 'self'",
+	"permissions": [
+		"storage",
+		"tabs"
+	]
+}

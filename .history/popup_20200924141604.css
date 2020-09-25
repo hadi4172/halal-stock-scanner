@@ -1,0 +1,11 @@
+* {
+    border: 1px black dotted;
+}
+
+body{
+    display:flex;
+}
+
+#right{
+    width:60%
+}
