@@ -25,11 +25,20 @@ input{
     background: hsl(0 0% 93%);
     border-radius: .25rem;
     padding: .6rem;
+    text-transform: uppercase;
+    margin-right: 4px;
 }
+
+::selection {
+    color: black;
+    background: white;
+  }
 
 ::placeholder {
     text-align: center;
+    font-size: 11px;
     color: rgb(191,191,191);
+    text-transform: none;
 }
 
 #description{
@@ -71,6 +80,7 @@ input{
 
 #icon-is-correct-or-no{
     color:rgb(255, 117, 117);
+    margin-left: 5px;
 }
 
 .not-conform{

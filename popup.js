@@ -1,87 +1,202 @@
-let symbol = "UDHI";
+
+
+let inputSymbol = document.querySelector("#input");
+let searchBtn = document.querySelector("#search-btn");
+let settingsBtn = document.querySelector("#settings-btn");
+let domSymbol = document.querySelector("#symbol");
+let warningIcon = document.querySelector("#icon-is-correct-or-no");
+let domMarket = document.querySelector("#market .value");
+let domSectorVal = document.querySelector("#sector .value");
+let domDebtToAssetsVal = document.querySelector("#debt-to-assets .value");
+let domDebtToAssetsMax = document.querySelector("#debt-to-assets .max");
+let domCashAndReceivableToAssetsVal = document.querySelector("#cash-receivable-to-total-assets .value");
+let domCashAndReceivableToAssetsMax = document.querySelector("#cash-receivable-to-total-assets .max");
+let domCashAndReceivableToAssetsYear = document.querySelector("#cash-receivable-to-total-assets .year");
+let domMktWatchDescription = document.querySelector("#description .mtkwatchvalue");
+let domReutersDescription = document.querySelector("#description .reutersvalue");
+let spinner = document.querySelector(".sk-chase");
+
 let mktwatchProfile;
 let mktwatchFinancials;
 let reutersData;
 let ychartsData;
 
-var r = new XMLHttpRequest();
-r.open('GET', `https://www.marketwatch.com/investing/stock/${symbol}/profile`, false);
-r.send(null);
-if (r.status == 200) {
-    mktwatchProfile = minifyHTML(r.responseText);
-}
-r.open('GET', `https://www.marketwatch.com/investing/stock/${symbol}/financials/balance-sheet`, false);
-r.send(null);
-if (r.status == 200) {
-    mktwatchFinancials = minifyHTML(r.responseText);
-}
-r.open('GET', `https://in.reuters.com/finance/stocks/company-profile/${symbol}`, false);
-r.send(null);
-if (r.status == 200) {
-    reutersData = minifyHTML(r.responseText);
-}
-r.open('GET', `https://ycharts.com/companies/${symbol}/multichart`, false);
-r.send(null);
-if (r.status == 200) {
-    ychartsData = minifyHTML(r.responseText);
-}
+let debtToAssetsMax = 33.33;
+let cashAndReceivableToAssetsMax = 80;
 
-mktwatchProfile = substringBetween(mktwatchProfile, 'id="maincontent"', 'id="below"');
-let mktwatchDesc = substringBetween(mktwatchProfile, 'class="full"><p>', '</p>');
-let sector = substringBetween(mktwatchProfile, 'Sector</p><p class="data lastcolumn">', '</p>');
-let debtToAsset = substringBetween(mktwatchProfile, 'Total Debt to Total Assets</p><p class="data lastcolumn">', '</p>');
-let cash = substringBetween(substringBetween(mktwatchFinancials,'Cash &amp; Short Term Investments</td>', '<td class="miniGraphCell">'),'<td class="valueCell">','</td>',true);
-let receivables = substringBetween(substringBetween(mktwatchFinancials,'Total Accounts Receivable</td>', '<td class="miniGraphCell">'),'<td class="valueCell">','</td>',true);
-let totalAssets = substringBetween(substringBetween(mktwatchFinancials,'</a> Total Assets</td>', '<td class="miniGraphCell">'),'<td class="valueCell">','</td>',true);
-let reutersDesc = substringBetween(reutersData, 'Full Description</a></h3></div><div class="moduleBody"><p>', '</p><div class="moreLink">');
-let market = substringBetween(ychartsData, 'class="symbol-trade-time">', '</span>');
+domDebtToAssetsMax.innerHTML = debtToAssetsMax;
+domCashAndReceivableToAssetsMax.innerHTML = cashAndReceivableToAssetsMax;
 
-console.log(`mktwatchDesc:`, mktwatchDesc);
-console.log(`sector:`, sector);
-console.log(`debtToAsset:`, debtToAsset);
-console.log(`cash:`,cash);
-console.log(`reutersData:`, reutersData);
+searchBtn.addEventListener('click', () => {
+    newSearch();
+});
+
+inputSymbol.addEventListener('keypress', (e) => {
+    if (e.keyCode === 13) {
+        newSearch();
+        window.setTimeout(()=> {
+            inputSymbol.focus();
+            inputSymbol.select();
+        }, 0);
+    }
+});
+
+inputSymbol.addEventListener('click', () => {
+    window.setTimeout(()=> {
+        inputSymbol.select();
+    }, 0);
+});
+
+function newSearch() {
+    if (inputSymbol.value !== "") {
+        spinner.style.display = "";
+        document.title = "Loading..."
+        let symbol = inputSymbol.value.toUpperCase();
+        let r = new XMLHttpRequest();
+        r.open('GET', `https://www.marketwatch.com/investing/stock/${symbol}/profile`, false);
+        r.send(null);
+        if (r.status == 200) {
+            mktwatchProfile = minifyHTML(r.responseText);
+        }
+        r.open('GET', `https://www.marketwatch.com/investing/stock/${symbol}/financials/balance-sheet`, false);
+        r.send(null);
+        if (r.status == 200) {
+            mktwatchFinancials = minifyHTML(r.responseText);
+        }
+        r.open('GET', `https://in.reuters.com/finance/stocks/company-profile/${symbol}`, false);
+        r.send(null);
+        if (r.status == 200) {
+            reutersData = minifyHTML(r.responseText);
+        }
+        r.open('GET', `https://ycharts.com/companies/${symbol}/multichart`, false);
+        r.send(null);
+        if (r.status == 200) {
+            ychartsData = minifyHTML(r.responseText);
+        } else {
+            ychartsData = "Error"
+        }
+
+        mktwatchProfile = substringBetween(mktwatchProfile, 'id="maincontent"', 'id="below"');
+        let mktwatchDesc = substringBetween(mktwatchProfile, 'class="full"><p>', '</p>');
+        let sector = substringBetween(mktwatchProfile, 'Sector</p><p class="data lastcolumn">', '</p>');
+        let debtToAsset = substringBetween(mktwatchProfile, 'Total Debt to Total Assets</p><p class="data lastcolumn">', '</p>').replace(/,/g, '');
+        let cash = substringBetween(substringBetween(mktwatchFinancials, 'Cash &amp; Short Term Investments</td>', '<td class="miniGraphCell">'), '<td class="valueCell">', '</td>', true);
+        if (cash === "Error") cash = substringBetween(substringBetween(mktwatchFinancials, 'Cash &amp; Due from Banks</td>', '<td class="miniGraphCell">'), '<td class="valueCell">', '</td>', true);
+        let receivables = substringBetween(substringBetween(mktwatchFinancials, 'Total Accounts Receivable</td>', '<td class="miniGraphCell">'), '<td class="valueCell">', '</td>', true);
+        let totalAssets = substringBetween(substringBetween(mktwatchFinancials, '</a> Total Assets</td>', '<td class="miniGraphCell">'), '<td class="valueCell">', '</td>', true);
+        let yearOfData = substringBetween(substringBetween(mktwatchFinancials, ' millions.</th>', '<th scope="col">5-year trend</th>'), '<th scope="col">', '</th>', true);
+        let reutersDesc = stripHTML(substringBetween(reutersData, 'Full Description</a></h3></div><div class="moduleBody"><p>', '</p><div class="moreLink">'));
+        let market = substringBetween(ychartsData, 'class="exchg exchgName">', '</span>');
+
+        let cashAndReceivableToAssets = validateTotalAssets(cash, receivables, totalAssets);
+
+        domSymbol.innerHTML = symbol;
+        domMarket.innerHTML = market;
+        domSectorVal.innerHTML = sector;
+        domDebtToAssetsVal.innerHTML = debtToAsset;
+        domCashAndReceivableToAssetsVal.innerHTML = cashAndReceivableToAssets;
+        domMktWatchDescription.innerHTML = mktwatchDesc;
+        domReutersDescription.innerHTML = reutersDesc;
+        domCashAndReceivableToAssetsYear.innerHTML = yearOfData;
+
+        if (cashAndReceivableToAssets > cashAndReceivableToAssetsMax) {
+            domCashAndReceivableToAssetsVal.parentNode.classList.add("not-conform");
+            domCashAndReceivableToAssetsVal.parentNode.classList.remove("conform");
+        } else if (!isNaN(cashAndReceivableToAssets)) {
+            domCashAndReceivableToAssetsVal.parentNode.classList.remove("not-conform");
+            domCashAndReceivableToAssetsVal.parentNode.classList.add("conform");
+        } else {
+            domCashAndReceivableToAssetsVal.parentNode.classList.remove("not-conform");
+            domCashAndReceivableToAssetsVal.parentNode.classList.remove("conform");
+        }
+
+        if (debtToAsset > debtToAssetsMax) {
+            domDebtToAssetsVal.parentNode.classList.add("not-conform");
+            domDebtToAssetsVal.parentNode.classList.remove("conform");
+        } else if (!isNaN(debtToAsset)) {
+            domDebtToAssetsVal.parentNode.classList.add("conform");
+            domDebtToAssetsVal.parentNode.classList.remove("not-conform");
+        } else {
+            domDebtToAssetsVal.parentNode.classList.remove("not-conform");
+            domDebtToAssetsVal.parentNode.classList.remove("conform");
+        }
+
+        if (document.querySelector(".not-conform") !== null) {
+            warningIcon.style.display = "";
+        } else {
+            warningIcon.style.display = "none";
+        }
+
+        document.title = symbol;
+        setTimeout(() => {
+            spinner.style.display = "none";
+        }, 1000);
+    }
+}
 
 function getNumberValue(string) {
     let number;
-    let million = false, billion = false, negative = false;
+    let million = false, billion = false, trillion = false, negative = false;
     if (string.includes("M")) {
-      string = string.replace(/M/g, "");
-      million = true
+        string = string.replace(/M/g, "");
+        million = true
     } else if (string.includes("B")) {
-      string = string.replace(/B/g, "");
-      billion = true;
+        string = string.replace(/B/g, "");
+        billion = true;
+    } else if (string.includes("T")) {
+        string = string.replace(/T/g, "");
+        trillion = true;
     }
     if (string.includes("(")) {
-      string = string.replace(/\(|\)/g, "");
-      negative = true
+        string = string.replace(/\(|\)/g, "");
+        negative = true
     }
     if (string.includes(",")) {
-      string = string.replace(/,/g, '.');
+        string = string.replace(/,/g, '');
     }
-    if(string === "-"){
+    if (string === "-" || string === "Error") {
         string = "0";
     }
     number = parseFloat(string);
     if (million) {
-      number *= 1000000;
+        number *= 1000000;
     } else if (billion) {
-      number *= 1000000000;
+        number *= 1000000000;
+    } else if (trillion) {
+        number *= 1000000000000;
     }
     if (negative) {
-      number = -number;
+        number = -number;
     }
     return number;
-  }
+}
 
 function substringBetween(s, a, b, last = false) {
+    if (typeof s === 'undefined') return "Error"
     let p = (last ? s.lastIndexOf(a) : s.indexOf(a)) + a.length;
     let f = s.indexOf(b, p);
     if ((p - a.length === -1) || f === -1) return "Error"
     return s.substring(p, f);
 }
+
 function minifyHTML(string) {
     return string.replace(/^\s+|\r\n|\n|\r|(>)\s+(<)|\s+$/gm, '$1$2');
 }
 
-//Full Description</a></h3></div><div class="moduleBody"><p>
+function stripHTML(string) {
+    return string.replace(/<[^>]*>?/gm, '');
+}
+
+function validateTotalAssets(cash, receivables, totalAssets) {
+    cash = getNumberValue(cash);
+    receivables = getNumberValue(receivables);
+    totalAssets = getNumberValue(totalAssets);
+    if ((cash !== 0 || receivables !== 0) && totalAssets !== 0) {
+        return round2dec(((cash + receivables) / totalAssets) * 100);
+    }
+    return "Error"
+}
+
+function round2dec(num) {
+    return Math.round((num + Number.EPSILON) * 100) / 100;
+}
