@@ -1,0 +1,25 @@
+
+input[darkmode] {
+    background: rgb(111, 111, 111);
+    color: rgb(191, 191, 191);
+}
+
+body[darkmode] {
+    background-color: rgb(68, 68, 68);
+}
+
+div[darkmode],
+td[darkmode],
+fieldset[darkmode],
+span[darkmode] {
+    color: whitesmoke;
+}
+
+i[darkmode]{
+    color:rgb(111,111,111);
+}
+
+a[darkmode] {
+    color: whitesmoke;
+    border: 1px solid whitesmoke;
+}

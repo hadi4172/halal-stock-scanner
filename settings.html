@@ -1,13 +1,73 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Settings</title>
-		<meta charset="UTF-8">
-		<script src="settings.css"></script>
-		<link rel="stylesheet" type="text/css" href="settings.css">
-	</head>
 
-	<body>
+<head>
+	<title>Settings</title>
+	<meta charset="UTF-8">
+	<script src="settings.js"></script>
+	<link rel="stylesheet" href="font-awesome/font-awesome.min.css">
+	<link rel="stylesheet" href="dropdownlist/dropdownlist.css"/>
+	<link rel="stylesheet" type="text/css" href="switch/switch.css">
+	<link rel="stylesheet" type="text/css" href="settings.css">
+	<link rel="stylesheet" type="text/css" href="darkmode.css">
+</head>
 
-	</body>
+<body darkmode>
+	<div id="title" darkmode>Settings</div>
+
+	<fieldset darkmode>
+		<table>
+			<tr>
+				<td darkmode>Font size (px) :&ensp;&ensp;</td>
+				<td><input darkmode id=input-fontsize type="text" maxlength=4></td>
+			</tr>
+			<tr>
+				<td darkmode>Dark mode : </td>
+				<td>
+					<label class="form-switch">
+						<input id=isdarkmode type="checkbox">
+						<i></i>
+					</label>
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<fieldset darkmode>
+		<table>
+			<tr>
+				<td darkmode>Market :&ensp;&ensp;</td>
+				<td>
+					<div class="dropdown dropdown-dark">
+						<select class="dropdown-select" id=marketselector>
+							<option value="US">US</option>
+						</select>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<fieldset>
+		<table>
+			<tr>
+				<td darkmode>Total Debt To Total Assets Max (%) : </td>
+				<td><input darkmode id=input-total-debt-to-assets-max type="text" maxlength=5></td>
+			</tr>
+			<tr>
+				<td darkmode>Cash and Receivables To Total Assets Max (%) :&ensp;&ensp;</td>
+				<td><input darkmode id=input-cash-and-receivables-to-assets-max type="text" maxlength=5></td>
+			</tr>
+		</table>
+	</fieldset>
+	<div id=foot>
+		<span darkmode id="savesuccess" style="width: 70%; padding-right: 10px; display:none ">
+			* The changes have been saved; refresh your other windows for the changes to take effect.
+		</span>
+		<a darkmode id="save-btn" class="btn"><span style="margin: 0 3px;">Save</span>
+			<i class="fa fa-save fa-sm dark-icon"></i>
+		</a>
+	</div>
+</body>
+
 </html>

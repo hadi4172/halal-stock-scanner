@@ -15,6 +15,9 @@ let domCashAndReceivableToAssetsYear = document.querySelector("#cash-receivable-
 let domMktWatchDescription = document.querySelector("#description .mtkwatchvalue");
 let domReutersDescription = document.querySelector("#description .reutersvalue");
 let spinner = document.querySelector(".sk-chase");
+let elementsAffectedByDarkMode = document.querySelectorAll("[darkmode]");
+let textElements = Array.from(document.querySelectorAll(".info"));
+textElements.push(document.querySelector("#description"));
 
 let mktwatchProfile;
 let mktwatchFinancials;
@@ -24,17 +27,39 @@ let ychartsData;
 let debtToAssetsMax = 33.33;
 let cashAndReceivableToAssetsMax = 80;
 
-domDebtToAssetsMax.innerHTML = debtToAssetsMax;
-domCashAndReceivableToAssetsMax.innerHTML = cashAndReceivableToAssetsMax;
+window.onload = function () {
+    chrome.storage.sync.get(["fontSize", "darkMode", "market", "totalDebtToAssetsMax", "cashAndReceivablesToAssetsMax"], function (arg) {
+        console.log(`arg:`, arg);
+        for (let i = 0, length = textElements.length; i < length; i++) {
+            textElements[i].style.fontSize = arg.fontSize+"px";
+        }
+        if (arg.darkMode === false) {
+            for (let i = 0, length = elementsAffectedByDarkMode.length; i < length; i++) {
+                elementsAffectedByDarkMode[i].removeAttribute("darkmode");
+            }
+        }
+        if (typeof arg.totalDebtToAssetsMax !== 'undefined' && typeof arg.cashAndReceivablesToAssetsMax !== 'undefined') {
+            debtToAssetsMax = parseFloat(arg.totalDebtToAssetsMax);
+            cashAndReceivableToAssetsMax = parseFloat(arg.cashAndReceivablesToAssetsMax);
+        }
+        domDebtToAssetsMax.innerHTML = debtToAssetsMax;
+        domCashAndReceivableToAssetsMax.innerHTML = cashAndReceivableToAssetsMax;
+    });
+}
 
 searchBtn.addEventListener('click', () => {
     newSearch();
 });
 
+settingsBtn.addEventListener('click', () => {
+    chrome.windows.create({ 'url': 'settings.html', 'type': 'popup', 'width': 440, 'height': 380 }, function (window) {
+    });
+});
+
 inputSymbol.addEventListener('keypress', (e) => {
     if (e.keyCode === 13) {
         newSearch();
-        window.setTimeout(()=> {
+        window.setTimeout(() => {
             inputSymbol.focus();
             inputSymbol.select();
         }, 0);
@@ -42,10 +67,11 @@ inputSymbol.addEventListener('keypress', (e) => {
 });
 
 inputSymbol.addEventListener('click', () => {
-    window.setTimeout(()=> {
+    window.setTimeout(() => {
         inputSymbol.select();
     }, 0);
 });
+
 
 function newSearch() {
     if (inputSymbol.value !== "") {
@@ -188,11 +214,11 @@ function stripHTML(string) {
 }
 
 function validateTotalAssets(cash, receivables, totalAssets) {
-    cash = getNumberValue(cash);
-    receivables = getNumberValue(receivables);
+    let cashVal = getNumberValue(cash);
+    let receivablesVal = getNumberValue(receivables);
     totalAssets = getNumberValue(totalAssets);
-    if ((cash !== 0 || receivables !== 0) && totalAssets !== 0) {
-        return round2dec(((cash + receivables) / totalAssets) * 100);
+    if ((cash !== "Error" || receivables !== "Error") && totalAssets !== 0) {
+        return round2dec(((cashVal + receivablesVal) / totalAssets) * 100);
     }
     return "Error"
 }

@@ -4,6 +4,7 @@
 
 body{
     display:flex;
+    background-color: whitesmoke;
 }
 
 #right{
@@ -27,11 +28,12 @@ input{
     padding: .6rem;
     text-transform: uppercase;
     margin-right: 4px;
+    color: dimgrey;
 }
 
 ::selection {
     color: black;
-    background: white;
+    background: rgb(187, 187, 187);
   }
 
 ::placeholder {
@@ -61,21 +63,8 @@ input{
     margin-bottom: 8px;
 }
 
-.dark-text{
-    color:whitesmoke;
-}
-
-.dark-background{
-    background-color: rgb(68,68,68);
-}
-
-.dark-input{
-    background: rgb(111,111,111);
-    color: rgb(191,191,191);
-}
-
-.dark-icon{
-    color:rgb(111,111,111);
+.btn:hover{
+    color:rgb(155, 155, 155);
 }
 
 #icon-is-correct-or-no{

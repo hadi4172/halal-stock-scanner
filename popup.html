@@ -8,11 +8,12 @@
     <link rel="stylesheet" href="font-awesome/font-awesome.min.css">
     <link rel="stylesheet" media="all" href="spinkit/spinkit.css">
     <link rel="stylesheet" type="text/css" href="popup.css">
+    <link rel="stylesheet" type="text/css" href="darkmode.css">
     <script src="SimpleBar/simplebar.min.js"></script>
     <script type="module" src="popup.js"></script>
 </head>
 
-<body class=dark-background>
+<body darkmode>
 
     <div class="sk-chase" style="position:absolute; left:45%; top:40%; display:none">
         <div class="sk-chase-dot"></div>
@@ -25,29 +26,29 @@
 
     <div id=left>
         <div>
-            <input id=input tabindex="0" class=dark-input type=text maxlength=5 placeholder="Enter a stock symbol" />
-            <i id=search-btn class="fa fa-search fa-lg dark-icon"></i>
-            <i id=settings-btn class="fa fa-cog fa-lg dark-icon"></i>
+            <input id=input tabindex="0" darkmode type=text maxlength=5 placeholder="Enter a stock symbol" />
+            <i id=search-btn darkmode class="fa fa-search fa-lg btn"></i>
+            <i id=settings-btn darkmode class="fa fa-cog fa-lg btn"></i>
         </div>
 
-        <span id=symbol class="dark-text">-</span>
-        <i id=icon-is-correct-or-no class="fa fa-exclamation-triangle fa-2x" style="display: none;"></i>
+        <span id=symbol darkmode title="Read the description carefully before buying a share">-</span>
+        <i id=icon-is-correct-or-no class="fa fa-exclamation-triangle fa-2x" style="display: none;" title="This stock is not sharia compliant"></i>
         
         <div style="width:90%">
             <hr>
-            <div id=market class="info dark-text"><span class="value">-</span></div>
-            <div id=sector class="info dark-text">Sector : <span class="value">-</span></div>
-            <div id=debt-to-assets class="info dark-text">Total Debt To Total Assets (%) : <span
+            <div id=market darkmode class="info"><span class="value">-</span></div>
+            <div id=sector darkmode class="info">Sector : <span class="value">-</span></div>
+            <div id=debt-to-assets darkmode class="info">Total Debt To Total Assets (%) : <span
                     class="value">-</span>/<span class="max">33.33</span></div>
-            <div id=cash-receivable-to-total-assets class="info dark-text">Cash and Receivables to Total Assets
+            <div id=cash-receivable-to-total-assets darkmode class="info">Cash and Receivables to Total Assets
                 (<span class="year">-</span>)
                 (%) : <span class="value">-</span>/<span class="max">80</span></div>
         </div>
     </div>
 
     <div id=right>
-        <div id=description class="dark-text" data-simplebar>
-            <div id=description-title class="dark-text">Description</div>
+        <div id=description darkmode data-simplebar>
+            <div id=description-title darkmode>Description</div>
             <span class="mtkwatchvalue">-
             </span>
             <br />

@@ -1,0 +1,88 @@
+/* * {
+    border: 1px black dotted;
+} */
+
+body{
+    background-color: white;
+}
+
+input[type=text] {
+    max-width: 27px;
+    font-size: 11px;
+    border: none;
+    background: hsl(0 0% 93%);
+    border-radius: .25rem;
+    padding: .25rem .5rem;
+    text-transform: uppercase;
+    text-align: center;
+    margin-right: 4px;
+    color: dimgrey;
+}
+
+::selection {
+    color: black;
+    background: rgb(187, 187, 187);
+}
+
+::placeholder {
+    text-align: center;
+    font-size: 11px;
+    color: rgb(191, 191, 191);
+    text-transform: none;
+}
+
+
+#title {
+    font-size: xx-large;
+    font-weight: bold;
+    margin: 0 0 5px 10px;
+}
+
+div,
+td,
+fieldset{
+    font-size: 13px;
+}
+
+#savesuccess{
+    font-size: 10px;
+}
+
+fieldset {
+    margin: 6px;
+}
+
+#foot {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.form-switch {
+    margin-left: -5px;
+}
+
+.btn {
+    color: black;
+    border: 1px solid black;
+    cursor: pointer;
+    display: block;
+    font-size: 16px;
+    padding: 3px;
+    margin: 10px;
+    max-width: 130px;
+    text-decoration: none;
+    width: 80px;
+    text-align: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border-radius: 30px;
+    background: transparent;
+}
+
+.btn:hover {
+    background: rgba(192, 192, 192, 0.2);
+}
