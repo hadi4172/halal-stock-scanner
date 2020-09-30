@@ -2,7 +2,7 @@
 	"name": "Halal Stock Scanner",
 	"manifest_version": 2,
 	"version": "0.0.9",
-	"description": "Provides the Muslim investor with the necessary information to determine whether a stock is halal to invest in or not.",
+	"description": "Halal stock scanner aims to help the Muslim trader/investor to quickly find out if a stock is halal to buy or not. ",
 	"icons": {
 		"128": "assets/oicon128.png",
 		"48": "assets/oicon48.png",
