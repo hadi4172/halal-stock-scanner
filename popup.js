@@ -102,10 +102,10 @@ function newSearch() {
             ychartsData = "Error"
         }
 
-        mktwatchProfile = substringBetween(mktwatchProfile, 'id="maincontent"', 'id="below"');
-        let mktwatchDesc = substringBetween(mktwatchProfile, 'class="full"><p>', '</p>');
-        let sector = substringBetween(mktwatchProfile, 'Sector</p><p class="data lastcolumn">', '</p>');
-        let debtToAsset = substringBetween(mktwatchProfile, 'Total Debt to Total Assets</p><p class="data lastcolumn">', '</p>').replace(/,/g, '');
+        mktwatchProfile = substringBetween(mktwatchProfile, '</mw-watchlist>', 'id="insider-toggle"');  //remove the code we don't need
+        let mktwatchDesc = substringBetween(mktwatchProfile, '<p class="description__text">', '</p>');
+        let sector = substringBetween(mktwatchProfile, 'Sector</small><span class="primary ">', '</span>');
+        let debtToAsset = substringBetween(mktwatchProfile, 'Total Debt to Total Assets</td><td class="table__cell w25 ">', '</td>').replace(/,/g, '');
         let cash = substringBetween(substringBetween(mktwatchFinancials, 'Cash &amp; Short Term Investments</td>', '<td class="miniGraphCell">'), '<td class="valueCell">', '</td>', true);
         if (cash === "Error") cash = substringBetween(substringBetween(mktwatchFinancials, 'Cash &amp; Due from Banks</td>', '<td class="miniGraphCell">'), '<td class="valueCell">', '</td>', true);
         let receivables = substringBetween(substringBetween(mktwatchFinancials, 'Total Accounts Receivable</td>', '<td class="miniGraphCell">'), '<td class="valueCell">', '</td>', true);
