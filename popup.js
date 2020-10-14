@@ -102,7 +102,7 @@ function newSearch() {
             ychartsData = "Error"
         }
 
-        mktwatchProfile = substringBetween(mktwatchProfile, '</mw-watchlist>', 'id="insider-toggle"');  //remove the code we don't need
+        mktwatchProfile = substringBetween(mktwatchProfile, '</mw-watchlist>', '<footer class=');  //remove the code we don't need
         let mktwatchDesc = substringBetween(mktwatchProfile, '<p class="description__text">', '</p>');
         let sector = substringBetween(mktwatchProfile, 'Sector</small><span class="primary ">', '</span>');
         let debtToAsset = substringBetween(mktwatchProfile, 'Total Debt to Total Assets</td><td class="table__cell w25 ">', '</td>').replace(/,/g, '');
