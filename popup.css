@@ -72,10 +72,24 @@ input{
     margin-left: 5px;
 }
 
+.nodataavailable{
+    color: rgb(253, 194, 65) !important;
+    display:unset !important;
+}
+
 .not-conform{
     color:rgb(255, 117, 117) !important;
 }
 
 .conform{
     color: rgb(169, 209, 142) !important;
+}
+
+.nodata{
+    color: rgb(253, 194, 65) !important;
+}
+
+.highlight {
+    background-color: rgb(250, 106, 106);
+    /* color: black; */
 }

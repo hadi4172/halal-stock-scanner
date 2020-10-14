@@ -14,6 +14,7 @@ let domCashAndReceivableToAssetsMax = document.querySelector("#cash-receivable-t
 let domCashAndReceivableToAssetsYear = document.querySelector("#cash-receivable-to-total-assets .year");
 let domMktWatchDescription = document.querySelector("#description .mtkwatchvalue");
 let domReutersDescription = document.querySelector("#description .reutersvalue");
+let domShortDescSource = document.querySelector("#shortdescsource");
 let spinner = document.querySelector(".sk-chase");
 let elementsAffectedByDarkMode = document.querySelectorAll("[darkmode]");
 let textElements = Array.from(document.querySelectorAll(".info"));
@@ -23,6 +24,8 @@ let mktwatchProfile;
 let mktwatchFinancials;
 let reutersData;
 let ychartsData;
+let wsjFinancials;
+let wsjProfile;
 
 let debtToAssetsMax = 33.33;
 let cashAndReceivableToAssetsMax = 80;
@@ -31,7 +34,7 @@ window.onload = function () {
     chrome.storage.sync.get(["fontSize", "darkMode", "market", "totalDebtToAssetsMax", "cashAndReceivablesToAssetsMax"], function (arg) {
         console.log(`arg:`, arg);
         for (let i = 0, length = textElements.length; i < length; i++) {
-            textElements[i].style.fontSize = arg.fontSize+"px";
+            textElements[i].style.fontSize = arg.fontSize + "px";
         }
         if (arg.darkMode === false) {
             for (let i = 0, length = elementsAffectedByDarkMode.length; i < length; i++) {
@@ -83,16 +86,22 @@ function newSearch() {
         r.send(null);
         if (r.status == 200) {
             mktwatchProfile = minifyHTML(r.responseText);
+        } else {
+            mktwatchProfile = "Error"
         }
         r.open('GET', `https://www.marketwatch.com/investing/stock/${symbol}/financials/balance-sheet`, false);
         r.send(null);
         if (r.status == 200) {
             mktwatchFinancials = minifyHTML(r.responseText);
+        } else {
+            mktwatchFinancials = "Error"
         }
         r.open('GET', `https://in.reuters.com/finance/stocks/company-profile/${symbol}`, false);
         r.send(null);
         if (r.status == 200) {
             reutersData = minifyHTML(r.responseText);
+        } else {
+            reutersData = "Error"
         }
         r.open('GET', `https://ycharts.com/companies/${symbol}/multichart`, false);
         r.send(null);
@@ -113,8 +122,42 @@ function newSearch() {
         let yearOfData = substringBetween(substringBetween(mktwatchFinancials, ' millions.</th>', '<th scope="col">5-year trend</th>'), '<th scope="col">', '</th>', true);
         let reutersDesc = stripHTML(substringBetween(reutersData, 'Full Description</a></h3></div><div class="moduleBody"><p>', '</p><div class="moreLink">'));
         let market = substringBetween(ychartsData, 'class="exchg exchgName">', '</span>');
-
         let cashAndReceivableToAssets = validateTotalAssets(cash, receivables, totalAssets);
+
+        if (mktwatchProfile !== "Error") {
+            if (debtToAsset === "Error") {
+                r.open('GET', `https://www.wsj.com/market-data/quotes/${symbol}/financials`, false);
+                r.send(null);
+                if (r.status == 200) {
+                    wsjFinancials = minifyHTML(r.responseText);
+                } else {
+                    wsjFinancials = "Error"
+                }
+
+                debtToAsset = substringBetween(wsjFinancials, `Total Debt to Total Assets</span><span class="data_data"><span class="marketDelta noChange">`, '</span>').replace(/,/g, '');
+            }
+            if (mktwatchDesc === "Error" || sector === "Error") {
+                r.open('GET', `https://www.wsj.com/market-data/quotes/${symbol}/company-people`, false);
+                r.send(null);
+                if (r.status == 200) {
+                    wsjProfile = minifyHTML(r.responseText);
+                } else {
+                    wsjProfile = "Error"
+                }
+
+                if (sector === "Error") sector = substringBetween(wsjProfile, 'Sector</span><span class="data_data">', '</span>');
+            }
+
+            if (mktwatchDesc === "Error") {
+                mktwatchDesc = substringBetween(wsjProfile, '<div class="cr_description_full cr_expand"><p class="txtBody">', '</p>');
+                domShortDescSource.innerHTML = "(wsj.com)";
+            } else {
+                domShortDescSource.innerHTML = "(marketwatch.com)";
+            }
+        }
+
+        mktwatchDesc = mktwatchDesc.replace(/(gay|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
+        reutersDesc = reutersDesc.replace(/(gay|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
 
         domSymbol.innerHTML = symbol;
         domMarket.innerHTML = market;
@@ -125,31 +168,47 @@ function newSearch() {
         domReutersDescription.innerHTML = reutersDesc;
         domCashAndReceivableToAssetsYear.innerHTML = yearOfData;
 
+        if(parseInt(yearOfData) + 2 < (new Date()).getFullYear() || yearOfData === "Error"){
+            domCashAndReceivableToAssetsYear.classList.add("nodata");
+        } else{
+            domCashAndReceivableToAssetsYear.classList.remove("nodata");
+        }
+
         if (cashAndReceivableToAssets > cashAndReceivableToAssetsMax) {
             domCashAndReceivableToAssetsVal.parentNode.classList.add("not-conform");
             domCashAndReceivableToAssetsVal.parentNode.classList.remove("conform");
+            domCashAndReceivableToAssetsVal.parentNode.classList.remove("nodata");
         } else if (!isNaN(cashAndReceivableToAssets)) {
             domCashAndReceivableToAssetsVal.parentNode.classList.remove("not-conform");
             domCashAndReceivableToAssetsVal.parentNode.classList.add("conform");
+            domCashAndReceivableToAssetsVal.parentNode.classList.remove("nodata");
         } else {
             domCashAndReceivableToAssetsVal.parentNode.classList.remove("not-conform");
             domCashAndReceivableToAssetsVal.parentNode.classList.remove("conform");
+            domCashAndReceivableToAssetsVal.parentNode.classList.add("nodata");
         }
 
         if (debtToAsset > debtToAssetsMax) {
             domDebtToAssetsVal.parentNode.classList.add("not-conform");
             domDebtToAssetsVal.parentNode.classList.remove("conform");
+            domDebtToAssetsVal.parentNode.classList.remove("nodata");
         } else if (!isNaN(debtToAsset)) {
             domDebtToAssetsVal.parentNode.classList.add("conform");
             domDebtToAssetsVal.parentNode.classList.remove("not-conform");
+            domDebtToAssetsVal.parentNode.classList.remove("nodata");
         } else {
             domDebtToAssetsVal.parentNode.classList.remove("not-conform");
             domDebtToAssetsVal.parentNode.classList.remove("conform");
+            domDebtToAssetsVal.parentNode.classList.add("nodata");
         }
 
         if (document.querySelector(".not-conform") !== null) {
             warningIcon.style.display = "";
+            warningIcon.classList.remove("nodataavailable");
+        } else if(document.querySelector(".nodata") !== null){
+            warningIcon.classList.add("nodataavailable");
         } else {
+            warningIcon.classList.remove("nodataavailable");
             warningIcon.style.display = "none";
         }
 

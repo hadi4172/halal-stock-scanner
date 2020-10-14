@@ -9,9 +9,10 @@ It is completely free to use and works for almost any stock. (from the US market
 We use the IFG (Islamic Finance Guru) standard for maximum allowed quantity rates, however, you can easily change the standard in our extension settings. 
 
 We base our information on 3 main websites:  
-www.marketwatch.com/
-in.reuters.com/
-ycharts.com/
+www.marketwatch.com/   
+in.reuters.com/   
+ycharts.com/   
+wsj.com
 
 Currently, we only fully support the US market. We appreciate all donations to encourage us to add other markets. Our paypal is [here](https://bit.ly/3iehMeY)
 
