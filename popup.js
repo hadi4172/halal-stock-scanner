@@ -93,6 +93,7 @@ function newSearch() {
         r.send(null);
         if (r.status == 200) {
             mktwatchFinancials = minifyHTML(r.responseText);
+            // console.log(`mktwatchFinancials:`,mktwatchFinancials);
         } else {
             mktwatchFinancials = "Error"
         }
@@ -115,14 +116,19 @@ function newSearch() {
         let mktwatchDesc = substringBetween(mktwatchProfile, '<p class="description__text">', '</p>');
         let sector = substringBetween(mktwatchProfile, 'Sector</small><span class="primary ">', '</span>');
         let debtToAsset = substringBetween(mktwatchProfile, 'Total Debt to Total Assets</td><td class="table__cell w25 ">', '</td>').replace(/,/g, '');
-        let cash = substringBetween(substringBetween(mktwatchFinancials, 'Cash &amp; Short Term Investments</td>', '<td class="miniGraphCell">'), '<td class="valueCell">', '</td>', true);
-        if (cash === "Error") cash = substringBetween(substringBetween(mktwatchFinancials, 'Cash &amp; Due from Banks</td>', '<td class="miniGraphCell">'), '<td class="valueCell">', '</td>', true);
-        let receivables = substringBetween(substringBetween(mktwatchFinancials, 'Total Accounts Receivable</td>', '<td class="miniGraphCell">'), '<td class="valueCell">', '</td>', true);
-        let totalAssets = substringBetween(substringBetween(mktwatchFinancials, '</a> Total Assets</td>', '<td class="miniGraphCell">'), '<td class="valueCell">', '</td>', true);
-        let yearOfData = substringBetween(substringBetween(mktwatchFinancials, ' millions.</th>', '<th scope="col">5-year trend</th>'), '<th scope="col">', '</th>', true);
+        let cash = substringBetween(substringBetween(mktwatchFinancials, 'Cash &amp; Short Term Investments</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
+        if (cash === "Error") cash = substringBetween(substringBetween(mktwatchFinancials, 'Total Cash &amp; Due from Banks</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
+        let receivables = substringBetween(substringBetween(mktwatchFinancials, 'Total Accounts Receivable</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
+        let totalAssets = substringBetween(substringBetween(mktwatchFinancials, '<div class="cell__content ">Total Assets</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
+        let yearOfData = substringBetween(substringBetween(mktwatchFinancials, '<div class="financials">', '<div class="cell__content">5-year trend</div></th>'), '<div class="cell__content">', '</div></th>', true);
         let reutersDesc = stripHTML(substringBetween(reutersData, 'Full Description</a></h3></div><div class="moduleBody"><p>', '</p><div class="moreLink">'));
         let market = substringBetween(ychartsData, 'class="exchg exchgName">', '</span>');
         let cashAndReceivableToAssets = validateTotalAssets(cash, receivables, totalAssets);
+
+        // console.log(`cash:`,cash);
+        // console.log(`receivables:`,receivables);
+        // console.log(`totalAssets:`,totalAssets);
+        // console.log(`yearOfData:`,yearOfData);
 
         if (mktwatchProfile !== "Error") {
             if (debtToAsset === "Error") {
@@ -156,8 +162,8 @@ function newSearch() {
             }
         }
 
-        mktwatchDesc = mktwatchDesc.replace(/(gay|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
-        reutersDesc = reutersDesc.replace(/(gay|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
+        mktwatchDesc = mktwatchDesc.replace(/(gay|lgbt|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
+        reutersDesc = reutersDesc.replace(/(gay|lgbt|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
 
         domSymbol.innerHTML = symbol;
         domMarket.innerHTML = market;
@@ -221,8 +227,11 @@ function newSearch() {
 
 function getNumberValue(string) {
     let number;
-    let million = false, billion = false, trillion = false, negative = false;
-    if (string.includes("M")) {
+    let thousand = false, million = false, billion = false, trillion = false, negative = false;
+    if (string.includes("K")) {
+        string = string.replace(/K/g, "");
+        thousand = true
+    } else if (string.includes("M")) {
         string = string.replace(/M/g, "");
         million = true
     } else if (string.includes("B")) {
@@ -243,7 +252,9 @@ function getNumberValue(string) {
         string = "0";
     }
     number = parseFloat(string);
-    if (million) {
+    if (thousand) {
+        number *= 1000;
+    } else if (million) {
         number *= 1000000;
     } else if (billion) {
         number *= 1000000000;
