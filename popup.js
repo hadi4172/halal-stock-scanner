@@ -13,7 +13,7 @@ let domCashAndReceivableToAssetsVal = document.querySelector("#cash-receivable-t
 let domCashAndReceivableToAssetsMax = document.querySelector("#cash-receivable-to-total-assets .max");
 let domCashAndReceivableToAssetsYear = document.querySelector("#cash-receivable-to-total-assets .year");
 let domMktWatchDescription = document.querySelector("#description .mtkwatchvalue");
-let domReutersDescription = document.querySelector("#description .reutersvalue");
+let domSecondDescription = document.querySelector("#description .secondvalue");
 let domShortDescSource = document.querySelector("#shortdescsource");
 let spinner = document.querySelector(".sk-chase");
 let elementsAffectedByDarkMode = document.querySelectorAll("[darkmode]");
@@ -22,7 +22,7 @@ textElements.push(document.querySelector("#description"));
 
 let mktwatchProfile;
 let mktwatchFinancials;
-let reutersData;
+let secondDescData;
 let ychartsData;
 let wsjFinancials;
 let wsjProfile;
@@ -80,8 +80,10 @@ function newSearch() {
     if (inputSymbol.value !== "") {
         spinner.style.display = "";
         document.title = "Loading..."
+        
         let symbol = inputSymbol.value.toUpperCase();
         let r = new XMLHttpRequest();
+
         r.open('GET', `https://www.marketwatch.com/investing/stock/${symbol}/profile`, false);
         r.send(null);
         if (r.status == 200) {
@@ -89,6 +91,7 @@ function newSearch() {
         } else {
             mktwatchProfile = "Error"
         }
+
         r.open('GET', `https://www.marketwatch.com/investing/stock/${symbol}/financials/balance-sheet`, false);
         r.send(null);
         if (r.status == 200) {
@@ -97,13 +100,15 @@ function newSearch() {
         } else {
             mktwatchFinancials = "Error"
         }
-        r.open('GET', `https://in.reuters.com/finance/stocks/company-profile/${symbol}`, false);
+
+        r.open('GET', `https://www.marketbeat.com/stocks/${symbol}`, false);
         r.send(null);
         if (r.status == 200) {
-            reutersData = minifyHTML(r.responseText);
+            secondDescData = minifyHTML(r.responseText);
         } else {
-            reutersData = "Error"
+            secondDescData = "Error"
         }
+
         r.open('GET', `https://ycharts.com/companies/${symbol}/multichart`, false);
         r.send(null);
         if (r.status == 200) {
@@ -121,7 +126,7 @@ function newSearch() {
         let receivables = substringBetween(substringBetween(mktwatchFinancials, 'Total Accounts Receivable</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
         let totalAssets = substringBetween(substringBetween(mktwatchFinancials, '<div class="cell__content ">Total Assets</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
         let yearOfData = substringBetween(substringBetween(mktwatchFinancials, '<div class="financials">', '<div class="cell__content">5-year trend</div></th>'), '<div class="cell__content">', '</div></th>', true);
-        let reutersDesc = stripHTML(substringBetween(reutersData, 'Full Description</a></h3></div><div class="moduleBody"><p>', '</p><div class="moreLink">'));
+        let secondDesc = stripHTML(substringBetween(secondDescData, `<div class='read-more-section'>`, `</div><div class='c-blue read-more-button invisible'>`));
         let market = substringBetween(ychartsData, 'class="exchg exchgName">', '</span>');
         let cashAndReceivableToAssets = validateTotalAssets(cash, receivables, totalAssets);
 
@@ -163,7 +168,7 @@ function newSearch() {
         }
 
         mktwatchDesc = mktwatchDesc.replace(/(gay|lgbt|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
-        reutersDesc = reutersDesc.replace(/(gay|lgbt|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
+        secondDesc = secondDesc.replace(/(gay|lgbt|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
 
         domSymbol.innerHTML = symbol;
         domMarket.innerHTML = market;
@@ -171,7 +176,7 @@ function newSearch() {
         domDebtToAssetsVal.innerHTML = debtToAsset;
         domCashAndReceivableToAssetsVal.innerHTML = cashAndReceivableToAssets;
         domMktWatchDescription.innerHTML = mktwatchDesc;
-        domReutersDescription.innerHTML = reutersDesc;
+        domSecondDescription.innerHTML = secondDesc;
         domCashAndReceivableToAssetsYear.innerHTML = yearOfData;
 
         if(parseInt(yearOfData) + 2 < (new Date()).getFullYear() || yearOfData === "Error"){
