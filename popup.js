@@ -125,7 +125,7 @@ function newSearch() {
         if (cash === "Error") cash = substringBetween(substringBetween(mktwatchFinancials, 'Total Cash &amp; Due from Banks</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
         let receivables = substringBetween(substringBetween(mktwatchFinancials, 'Total Accounts Receivable</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
         let totalAssets = substringBetween(substringBetween(mktwatchFinancials, '<div class="cell__content ">Total Assets</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
-        let yearOfData = substringBetween(substringBetween(mktwatchFinancials, '<div class="financials">', '<div class="cell__content">5-year trend</div></th>'), '<div class="cell__content">', '</div></th>', true);
+        let yearOfData = substringBetween(substringBetween(mktwatchFinancials, '<header class="header header--table">', '<div class="cell__content">5-year trend</div></th>'), '<div class="cell__content">', '</div></th>', true);
         let secondDesc = stripHTML(substringBetween(secondDescData, `<div class='read-more-section'>`, `</div><div class='c-blue read-more-button invisible'>`));
         let market = substringBetween(ychartsData, 'class="exchg exchgName">', '</span>');
         let cashAndReceivableToAssets = validateTotalAssets(cash, receivables, totalAssets);
@@ -167,8 +167,8 @@ function newSearch() {
             }
         }
 
-        mktwatchDesc = mktwatchDesc.replace(/(gay|lgbt|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
-        secondDesc = secondDesc.replace(/(gay|lgbt|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
+        mktwatchDesc = mktwatchDesc.replace(/(gay|lgbt|nightclub|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
+        secondDesc = secondDesc.replace(/(gay|lgbt|nightclub|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
 
         domSymbol.innerHTML = symbol;
         domMarket.innerHTML = market;

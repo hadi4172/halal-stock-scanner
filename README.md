@@ -17,9 +17,7 @@ We base our information on 4 main websites:
 
 Currently, we only fully support the US market. We appreciate all donations to encourage us to add other markets. Our paypal is [here](https://bit.ly/3iehMeY)
 
-if the extension has been beneficial to you, please make us du'aa.
-
-To use it with an advanced broker software, like Interactive Brokers' Traders Workstation, we recommend you to install [WindowTop](https://bityl.co/3k15) so that the Halal stock scanner stay on the top of the screen.
+if the extension has been beneficial to you, please make for us du'aa.
 
 You can also put a shortcut of the extension on your desktop (so you don't have to open a browser window to open a new scanner) by following these steps:
 
