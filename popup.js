@@ -101,7 +101,7 @@ function newSearch() {
             mktwatchFinancials = "Error"
         }
 
-        r.open('GET', `https://www.marketbeat.com/stocks/${symbol}`, false);
+        r.open('GET', `https://www.marketbeat.com/stocks/A/${symbol}`, false);
         r.send(null);
         if (r.status == 200) {
             secondDescData = minifyHTML(r.responseText);
@@ -167,8 +167,10 @@ function newSearch() {
             }
         }
 
-        mktwatchDesc = mktwatchDesc.replace(/(gay|lgbt|nightclub|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
-        secondDesc = secondDesc.replace(/(gay|lgbt|nightclub|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig, '<span class="highlight">$1</span>');
+        let haramRegex = /(gay|lgbt|nightclub|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig;
+
+        mktwatchDesc = mktwatchDesc.replace(haramRegex, '<span class="highlight">$1</span>');
+        secondDesc = secondDesc.replace(haramRegex, '<span class="highlight">$1</span>');
 
         domSymbol.innerHTML = symbol;
         domMarket.innerHTML = market;
