@@ -23,7 +23,6 @@ textElements.push(document.querySelector("#description"));
 let mktwatchProfile;
 let mktwatchFinancials;
 let secondDescData;
-let ychartsData;
 let wsjFinancials;
 let wsjProfile;
 
@@ -109,25 +108,18 @@ function newSearch() {
             secondDescData = "Error"
         }
 
-        r.open('GET', `https://ycharts.com/companies/${symbol}/multichart`, false);
-        r.send(null);
-        if (r.status == 200) {
-            ychartsData = minifyHTML(r.responseText);
-        } else {
-            ychartsData = "Error"
-        }
 
-        mktwatchProfile = substringBetween(mktwatchProfile, '</mw-watchlist>', '<footer class=');  //remove the code we don't need
-        let mktwatchDesc = substringBetween(mktwatchProfile, '<p class="description__text">', '</p>');
-        let sector = substringBetween(mktwatchProfile, 'Sector</small><span class="primary ">', '</span>');
-        let debtToAsset = substringBetween(mktwatchProfile, 'Total Debt to Total Assets</td><td class="table__cell w25 ">', '</td>').replace(/,/g, '');
+        let mktwatchProfilePart = substringBetween(mktwatchProfile, '</mw-watchlist>', '<footer class=');  //remove the code we don't need
+        let mktwatchDesc = substringBetween(mktwatchProfilePart, '<p class="description__text">', '</p>');
+        let sector = substringBetween(mktwatchProfilePart, 'Sector</small><span class="primary ">', '</span>');
+        let debtToAsset = substringBetween(mktwatchProfilePart, 'Total Debt to Total Assets</td><td class="table__cell w25 ">', '</td>').replace(/,/g, '');
         let cash = substringBetween(substringBetween(mktwatchFinancials, 'Cash &amp; Short Term Investments</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
         if (cash === "Error") cash = substringBetween(substringBetween(mktwatchFinancials, 'Total Cash &amp; Due from Banks</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
         let receivables = substringBetween(substringBetween(mktwatchFinancials, 'Total Accounts Receivable</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
         let totalAssets = substringBetween(substringBetween(mktwatchFinancials, '<div class="cell__content ">Total Assets</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
         let yearOfData = substringBetween(substringBetween(mktwatchFinancials, '<header class="header header--table">', '<div class="cell__content">5-year trend</div></th>'), '<div class="cell__content">', '</div></th>', true);
         let secondDesc = stripHTML(substringBetween(secondDescData, `<div class='read-more-section'>`, `</div><div class='c-blue read-more-button invisible'>`));
-        let market = substringBetween(ychartsData, 'class="exchg exchgName">', '</span>');
+        let market = substringBetween(mktwatchProfile, 'exchange" content="', '"');
         let cashAndReceivableToAssets = validateTotalAssets(cash, receivables, totalAssets);
 
         // console.log(`cash:`,cash);
@@ -135,7 +127,7 @@ function newSearch() {
         // console.log(`totalAssets:`,totalAssets);
         // console.log(`yearOfData:`,yearOfData);
 
-        if (mktwatchProfile !== "Error") {
+        if (mktwatchProfilePart !== "Error") {
             if (debtToAsset === "Error") {
                 r.open('GET', `https://www.wsj.com/market-data/quotes/${symbol}/financials`, false);
                 r.send(null);
@@ -167,7 +159,7 @@ function newSearch() {
             }
         }
 
-        let haramRegex = /(gay|lgbt|nightclub|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig;
+        let haramRegex = /(gay|lgbt|nightclub|cabaret|bar|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig;
 
         mktwatchDesc = mktwatchDesc.replace(haramRegex, '<span class="highlight">$1</span>');
         secondDesc = secondDesc.replace(haramRegex, '<span class="highlight">$1</span>');
