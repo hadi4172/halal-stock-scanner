@@ -31,6 +31,20 @@ input[type=text] {
     text-transform: none;
 }
 
+textarea {
+    max-width: 290px; /* Set to the maximum width you desire */
+    min-width: 200px; /* Set to the minimum width you desire */
+    max-height: 100px; /* Set to the maximum height you desire */
+    min-height: 100px; /* Set to the minimum height you desire */
+    font-size: 11px; /* Match with your other inputs or according to your preference */
+    border: none;
+    background: hsl(0 0% 93%); /* Same as your other input elements */
+    border-radius: .25rem;
+    padding: .25rem .5rem;
+    color: dimgrey;
+    resize: none; /* Disable resizing */
+}
+
 
 #title {
     font-size: xx-large;

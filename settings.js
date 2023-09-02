@@ -4,6 +4,7 @@ window.onload = function () {
     let marketSelect = document.querySelector("#marketselector");
     let totalDebtToAssetsMaxInput = document.querySelector("#input-total-debt-to-assets-max");
     let cashAndReceivablesToAssetsMaxInput = document.querySelector("#input-cash-and-receivables-to-assets-max");
+    let filtersTextInput = document.querySelector("#filters");
     let saveBtn = document.querySelector("#save-btn");
     let elementsAffectedByDarkMode = document.querySelectorAll("[darkmode]");
 
@@ -11,7 +12,7 @@ window.onload = function () {
     let isDarkMode = true;
     let needToSave = false;
 
-    chrome.storage.sync.get(["fontSize", "darkMode", "market", "totalDebtToAssetsMax", "cashAndReceivablesToAssetsMax"], function (arg) {
+    chrome.storage.sync.get(["fontSize", "darkMode", "market", "totalDebtToAssetsMax", "cashAndReceivablesToAssetsMax", "filters"], function (arg) {
         fontSizeInput.value = arg.fontSize;
         if (arg.darkMode === true) {
             darkModeSwitch.setAttribute("checked", "true");
@@ -22,6 +23,7 @@ window.onload = function () {
         marketSelect.value = arg.market;
         totalDebtToAssetsMaxInput.value = arg.totalDebtToAssetsMax;
         cashAndReceivablesToAssetsMaxInput.value = arg.cashAndReceivablesToAssetsMax;
+        filtersTextInput.value = arg.filters;
     });
 
     for (let i = 0, length = inputs.length; i < length; i++) {
@@ -57,7 +59,8 @@ window.onload = function () {
             darkMode: darkModeSwitch.getAttribute("checked") == "true",
             market: marketSelect.value,
             totalDebtToAssetsMax: totalDebtToAssetsMaxInput.value,
-            cashAndReceivablesToAssetsMax: cashAndReceivablesToAssetsMaxInput.value
+            cashAndReceivablesToAssetsMax: cashAndReceivablesToAssetsMaxInput.value,
+            filters: filtersTextInput.value
         });
         needToSave = false;
         document.querySelector("#savesuccess").style.removeProperty("display");

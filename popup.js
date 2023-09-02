@@ -28,9 +28,10 @@ let wsjProfile;
 
 let debtToAssetsMax = 33.33;
 let cashAndReceivableToAssetsMax = 80;
+let filtersString = "";
 
 window.onload = function () {
-    chrome.storage.sync.get(["fontSize", "darkMode", "market", "totalDebtToAssetsMax", "cashAndReceivablesToAssetsMax"], function (arg) {
+    chrome.storage.sync.get(["fontSize", "darkMode", "market", "totalDebtToAssetsMax", "cashAndReceivablesToAssetsMax", "filters"], function (arg) {
         console.log(`arg:`, arg);
         for (let i = 0, length = textElements.length; i < length; i++) {
             textElements[i].style.fontSize = arg.fontSize + "px";
@@ -44,6 +45,10 @@ window.onload = function () {
             debtToAssetsMax = parseFloat(arg.totalDebtToAssetsMax);
             cashAndReceivableToAssetsMax = parseFloat(arg.cashAndReceivablesToAssetsMax);
         }
+        if (typeof arg.filters !== 'undefined') {
+            filtersString = arg.filters;
+        }
+
         domDebtToAssetsMax.innerHTML = debtToAssetsMax;
         domCashAndReceivableToAssetsMax.innerHTML = cashAndReceivableToAssetsMax;
     });
@@ -54,7 +59,7 @@ searchBtn.addEventListener('click', () => {
 });
 
 settingsBtn.addEventListener('click', () => {
-    chrome.windows.create({ 'url': 'settings.html', 'type': 'popup', 'width': 440, 'height': 380 }, function (window) {
+    chrome.windows.create({ 'url': 'settings.html', 'type': 'popup', 'width': 440, 'height': 510 }, function (window) {
     });
 });
 
@@ -79,7 +84,7 @@ function newSearch() {
     if (inputSymbol.value !== "") {
         spinner.style.display = "";
         document.title = "Loading..."
-        
+
         let symbol = inputSymbol.value.toUpperCase();
         let r = new XMLHttpRequest();
 
@@ -118,7 +123,7 @@ function newSearch() {
         let receivables = substringBetween(substringBetween(mktwatchFinancials, 'Total Accounts Receivable</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
         let totalAssets = substringBetween(substringBetween(mktwatchFinancials, '<div class="cell__content ">Total Assets</div>', '</tr>'), '<div class="cell__content"><span class="">', '</span></div>', true);
         let yearOfData = substringBetween(substringBetween(mktwatchFinancials, '<header class="header header--table">', '<div class="cell__content">5-year trend</div></th>'), '<div class="cell__content">', '</div></th>', true);
-        let secondDesc = stripHTML(substringBetween(secondDescData, `<div class='read-more-section'>`, `</div><div class='c-blue read-more-button invisible'>`));
+        let secondDesc = stripHTML(substringBetween(substringBetween(secondDescData, '<div class="row price-data-section', '<div id="priceChart"'),`<div class="read-more-section">`, `<div class="c-blue read-more-button`));
         let market = substringBetween(mktwatchProfile, 'exchange" content="', '"');
         let cashAndReceivableToAssets = validateTotalAssets(cash, receivables, totalAssets);
 
@@ -159,7 +164,7 @@ function newSearch() {
             }
         }
 
-        let haramRegex = /(gay|lgbt|nightclub|cabaret|bar|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana)/ig;
+        let haramRegex = new RegExp(`(${filtersString})`, "ig");
 
         mktwatchDesc = mktwatchDesc.replace(haramRegex, '<span class="highlight">$1</span>');
         secondDesc = secondDesc.replace(haramRegex, '<span class="highlight">$1</span>');

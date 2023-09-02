@@ -20,6 +20,7 @@ function setDefaultVariables(){
         darkMode:true,
         market:"US",
         totalDebtToAssetsMax:33.33,
-        cashAndReceivablesToAssetsMax:80
+        cashAndReceivablesToAssetsMax:80,
+        filters:"gay|lgbt|nightclub|cabaret|bar|mortgage|wine|military|defense|cannabi|alcohol|weapon|meat|pork|bank|gambling|insurance|tobacco|adult|sex|bonds|movie|shows|streaming|music|food|real estate investment|financial services|equity investment|beverage|general retailer|casino|marijuana"
     });
 }
