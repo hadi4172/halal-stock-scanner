@@ -7,12 +7,13 @@ window.onload = function () {
     let filtersTextInput = document.querySelector("#filters");
     let saveBtn = document.querySelector("#save-btn");
     let elementsAffectedByDarkMode = document.querySelectorAll("[darkmode]");
+    let isBatchModeCheckbox = document.querySelector("#isbatchmode");
 
-    let inputs = [fontSizeInput, darkModeSwitch, marketSelect, totalDebtToAssetsMaxInput, cashAndReceivablesToAssetsMaxInput];
+    let inputs = [fontSizeInput, darkModeSwitch, marketSelect, totalDebtToAssetsMaxInput, cashAndReceivablesToAssetsMaxInput, filtersTextInput, isBatchModeCheckbox];
     let isDarkMode = true;
     let needToSave = false;
 
-    chrome.storage.sync.get(["fontSize", "darkMode", "market", "totalDebtToAssetsMax", "cashAndReceivablesToAssetsMax", "filters"], function (arg) {
+    chrome.storage.sync.get(["fontSize", "darkMode", "market", "totalDebtToAssetsMax", "cashAndReceivablesToAssetsMax", "filters", "isBatchMode"], function (arg) {
         fontSizeInput.value = arg.fontSize;
         if (arg.darkMode === true) {
             darkModeSwitch.setAttribute("checked", "true");
@@ -20,6 +21,7 @@ window.onload = function () {
             toggleDarkMode();
             isDarkMode = false;
         }
+        isBatchModeCheckbox.checked = arg.isBatchMode;
         marketSelect.value = arg.market;
         totalDebtToAssetsMaxInput.value = arg.totalDebtToAssetsMax;
         cashAndReceivablesToAssetsMaxInput.value = arg.cashAndReceivablesToAssetsMax;
@@ -49,6 +51,10 @@ window.onload = function () {
         }
     });
 
+    isBatchModeCheckbox.addEventListener("change", function () {
+        needToSave = true;
+    });
+
     marketSelect.addEventListener("click", () => {
         alert("Sorry, we only fully support US market at the moment.")
     });
@@ -60,7 +66,8 @@ window.onload = function () {
             market: marketSelect.value,
             totalDebtToAssetsMax: totalDebtToAssetsMaxInput.value,
             cashAndReceivablesToAssetsMax: cashAndReceivablesToAssetsMaxInput.value,
-            filters: filtersTextInput.value
+            filters: filtersTextInput.value,
+            isBatchMode: isBatchModeCheckbox.checked
         });
         needToSave = false;
         document.querySelector("#savesuccess").style.removeProperty("display");
